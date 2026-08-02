@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goforth Math — Cynthia Goforth, High School Math Teacher</title>
+  <meta name="description" content="Cynthia Goforth — high school math teacher. AP Precalculus and Algebra 2 resources, notes, and worksheets." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Animated background orbs (purple, teal, soft pink) -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="site-logo">Goforth<span>Math</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="precalc.html">AP Precalculus</a></li>
+          <li><a href="algebra2.html">Algebra 2</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to <span class="accent">Goforth Math</span></h1>
+      <p class="subtitle">High school math teacher. AP Precalculus &amp; Algebra 2. Curriculum, notes, and resources for my students and anyone who wants to learn.</p>
+      <div class="btn-row">
+        <a href="precalc.html" class="btn">AP Precalculus</a>
+        <a href="algebra2.html" class="btn btn-secondary">Algebra 2</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section>
+      <h2>About Me</h2>
+      <div class="profile-grid">
+        <div class="profile-photo">
+          <div class="photo-placeholder"><span>CG</span></div>
+          <p>Cynthia Goforth</p>
+        </div>
+        <div>
+          <p>Hi! I'm Cynthia Goforth, a high school mathematics teacher passionate about making algebraic and analytical thinking accessible to every student. After several years teaching <strong>Algebra 2</strong>, I'm transitioning into <strong>AP Precalculus</strong> for the 2026&ndash;2027 school year.</p>
+          <p>My approach focuses on conceptual understanding paired with careful technique &mdash; especially the precision skills that students need for the AP exam, like rounding to three decimal places and writing complete justifications using clear sentence stems.</p>
+          <p>This site is both a portfolio of my work and a living archive of curriculum, worksheets, and notes for my students.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Teaching Philosophy</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Standards-Aligned</h3>
+          <p>Every lesson, problem, and extension ties back to the TEKS for Algebra 2 and the College Board CED for AP Precalculus. Nothing is taught in a vacuum.</p>
+        </div>
+        <div class="card">
+          <h3>AP-Style Precision</h3>
+          <p>Students practice rounding decimal answers to three places and using consistent sentence stems for justification, so that AP-style reasoning becomes second nature.</p>
+        </div>
+        <div class="card">
+          <h3>Conceptual + Procedural</h3>
+          <p>Strong procedures stick when they sit on top of strong concepts. We build both at the same time &mdash; with multiple representations, real applications, and meaningful practice.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>For My Students</h2>
+      <p>This site is your archive. You'll find class notes, practice worksheets, review packets, and links to anything we use in class.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-meta">2026&ndash;27</div>
+          <h3>AP Precalculus</h3>
+          <p>Course overview, units aligned to the College Board CED, and the full library of notes and practice for each unit.</p>
+          <a href="precalc.html" class="card-link">Go to course</a>
+        </div>
+        <div class="card">
+          <div class="card-meta">Archive</div>
+          <h3>Algebra 2</h3>
+          <p>TEKS-aligned units, notes, and worksheets from Algebra 2 &mdash; still available for review and practice.</p>
+          <a href="algebra2.html" class="card-link">Go to course</a>
+        </div>
+        <div class="card">
+          <div class="card-meta">All courses</div>
+          <h3>Resources Library</h3>
+          <p>Searchable archive of every worksheet, note set, and review packet on the site.</p>
+          <a href="resources.html" class="card-link">Browse resources</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="callout">
+      <strong>Need help outside class?</strong> Office hours and tutoring information are listed on the <a href="contact.html">Contact page</a>.
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year">2026</span> Cynthia Goforth &middot; <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

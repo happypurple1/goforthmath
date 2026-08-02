@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resources | Goforth Math</title>
+  <meta name="description" content="Searchable archive of notes, worksheets, and review materials for AP Precalculus and Algebra 2." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="site-logo">Goforth<span>Math</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="precalc.html">AP Precalculus</a></li>
+          <li><a href="algebra2.html">Algebra 2</a></li>
+          <li><a href="resources.html" class="active">Resources</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <h1>Resources Library</h1>
+    <p>Searchable archive of notes, worksheets, and review materials.</p>
+  </section>
+
+  <main>
+    <section>
+      <h2>Browse &amp; Search</h2>
+      <div class="filter-bar">
+        <input type="search" id="search" placeholder="Search resources (e.g., quadratic, log, polar)&hellip;" aria-label="Search resources" />
+        <button class="filter-tag active" data-filter="all">All</button>
+        <button class="filter-tag" data-filter="precalc">AP Precalc</button>
+        <button class="filter-tag" data-filter="alg2">Algebra 2</button>
+        <button class="filter-tag" data-filter="notes">Notes</button>
+        <button class="filter-tag" data-filter="worksheet">Worksheets</button>
+        <button class="filter-tag" data-filter="review">Reviews</button>
+      </div>
+
+      <table id="resources-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Course</th>
+            <th>Type</th>
+            <th>Standard</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- AP Precalc -->
+          <tr data-course="precalc" data-type="notes">
+            <td>Average &amp; instantaneous rates of change</td>
+            <td>AP Precalc</td>
+            <td>Notes</td>
+            <td>Unit 1</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="precalc" data-type="worksheet">
+            <td>Polynomial end behavior</td>
+            <td>AP Precalc</td>
+            <td>Worksheet</td>
+            <td>Unit 1</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="precalc" data-type="worksheet">
+            <td>Rational functions: holes, asymptotes, slants</td>
+            <td>AP Precalc</td>
+            <td>Worksheet</td>
+            <td>Unit 1</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="precalc" data-type="worksheet">
+            <td>Modeling with regression (round to 3 decimal places)</td>
+            <td>AP Precalc</td>
+            <td>Worksheet</td>
+            <td>Unit 2</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="precalc" data-type="notes">
+            <td>Unit circle &amp; sinusoidal functions</td>
+            <td>AP Precalc</td>
+            <td>Notes</td>
+            <td>Unit 3</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="precalc" data-type="worksheet">
+            <td>Polar graphs: rose curves, limaçons</td>
+            <td>AP Precalc</td>
+            <td>Worksheet</td>
+            <td>Unit 3</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="precalc" data-type="review">
+            <td>Sentence-stem justification reference card</td>
+            <td>AP Precalc</td>
+            <td>Reference</td>
+            <td>All units</td>
+            <td><em>coming soon</em></td>
+          </tr>
+
+          <!-- Algebra 2 -->
+          <tr data-course="alg2" data-type="notes">
+            <td>Parent functions reference</td>
+            <td>Algebra 2</td>
+            <td>Notes</td>
+            <td>2A.2A</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="worksheet">
+            <td>Transformations of functions</td>
+            <td>Algebra 2</td>
+            <td>Worksheet</td>
+            <td>2A.2C</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="worksheet">
+            <td>Completing the square &amp; vertex form</td>
+            <td>Algebra 2</td>
+            <td>Worksheet</td>
+            <td>2A.4B</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="worksheet">
+            <td>Quadratic modeling problems</td>
+            <td>Algebra 2</td>
+            <td>Worksheet</td>
+            <td>2A.4E</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="worksheet">
+            <td>Solving polynomial equations</td>
+            <td>Algebra 2</td>
+            <td>Worksheet</td>
+            <td>2A.7B</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="worksheet">
+            <td>Properties of logarithms</td>
+            <td>Algebra 2</td>
+            <td>Worksheet</td>
+            <td>2A.5C</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="review">
+            <td>Semester 1 mixed-practice review</td>
+            <td>Algebra 2</td>
+            <td>Review</td>
+            <td>Multiple</td>
+            <td><em>coming soon</em></td>
+          </tr>
+          <tr data-course="alg2" data-type="review">
+            <td>STAAR-style released items by reporting category</td>
+            <td>Algebra 2</td>
+            <td>Review</td>
+            <td>STAAR</td>
+            <td><em>coming soon</em></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);">
+        <em>This archive will fill in as the school year progresses. To add a real download, drop a PDF in a <code>files/</code> folder and replace <code>coming soon</code> with a link like <code>&lt;a href="files/your-worksheet.pdf"&gt;Download&lt;/a&gt;</code>.</em>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year">2026</span> Cynthia Goforth &middot; <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ===== Search & filter =====
+    const searchInput = document.getElementById("search");
+    const filterButtons = document.querySelectorAll(".filter-tag");
+    const rows = document.querySelectorAll("#resources-table tbody tr");
+    let activeFilter = "all";
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const course = row.dataset.course;
+        const type = row.dataset.type;
+
+        const matchesQuery = !query || text.includes(query);
+        const matchesFilter =
+          activeFilter === "all" ||
+          activeFilter === course ||
+          activeFilter === type;
+
+        row.style.display = matchesQuery && matchesFilter ? "" : "none";
+      });
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilter = btn.dataset.filter;
+        applyFilters();
+      });
+    });
+  </script>
+</body>
+</html>

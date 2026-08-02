@@ -5,10 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Goforth Math — Cynthia Goforth, High School Math Teacher</title>
   <meta name="description" content="Cynthia Goforth — high school math teacher. AP Precalculus and Algebra 2 resources, notes, and worksheets." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="shortcut icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ===== Wave hero header ===== */
+    .wave-hero {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      min-height: 600px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #08051a 0%, #150a2e 50%, #1f0d3a 100%);
+      margin-bottom: 3rem;
+    }
+    #wave-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .wave-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(8, 5, 26, 0.75) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .wave-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 2rem;
+      text-align: center;
+      pointer-events: none;
+    }
+    .wave-equation {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(210, 170, 240, 0.55);
+      letter-spacing: 0.05em;
+      margin-bottom: 2.5rem;
+    }
+    .wave-equation .op { color: rgba(180, 130, 220, 0.4); }
+    .wave-content h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 300;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      color: #f6f0fc;
+      text-shadow: 0 2px 50px rgba(160, 60, 200, 0.4);
+      margin: 0;
+    }
+    .wave-content h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: #d8a8ec;
+    }
+    .wave-tagline {
+      margin-top: 1.5rem;
+      font-family: 'Fraunces', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+      color: rgba(235, 220, 250, 0.78);
+      max-width: 540px;
+      letter-spacing: 0.01em;
+    }
+    .wave-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: rgba(210, 170, 240, 0.5);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      z-index: 2;
+      animation: wavePulse 2.5s ease-in-out infinite;
+    }
+    @keyframes wavePulse {
+      0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.8; transform: translateX(-50%) translateY(4px); }
+    }
+    /* Make sure the site header sits on top of the wave */
+    .site-header { position: relative; z-index: 10; }
+  </style>
 </head>
 <body>
   <!-- Animated background orbs (purple, teal, soft pink) -->
@@ -27,7 +124,6 @@
           <li><a href="precalc.html">AP Precalculus</a></li>
           <li><a href="algebra2.html">Algebra 2</a></li>
           <li><a href="resources.html">Resources</a></li>
-          <li><a href="projects.html">Projects</a></li>
           <li><a href="research.html">Research</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -35,15 +131,20 @@
     </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Welcome to <span class="accent">Goforth Math</span></h1>
-      <p class="subtitle">High school math teacher. AP Precalculus &amp; Algebra 2. Curriculum, notes, and resources for my students and anyone who wants to learn.</p>
-      <div class="btn-row">
-        <a href="precalc.html" class="btn">AP Precalculus</a>
-        <a href="algebra2.html" class="btn btn-secondary">Algebra 2</a>
+  <!-- ===== WAVE HERO ===== -->
+  <section class="wave-hero">
+    <canvas id="wave-canvas"></canvas>
+    <div class="wave-vignette"></div>
+    <div class="wave-content">
+      <div class="wave-equation">
+        <span>&part;&sup2;u</span><span class="op">/</span><span>&part;t&sup2;</span>
+        &nbsp;<span class="op">=</span>&nbsp;
+        <span>c&sup2;</span><span class="op">&middot;</span><span>&nabla;&sup2;u</span>
       </div>
+      <h1>Math <em>is&nbsp;stunning.</em></h1>
+      <p class="wave-tagline">Let's find out why, together.</p>
     </div>
+    <div class="wave-scroll">scroll</div>
   </section>
 
   <main>
@@ -116,6 +217,143 @@
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+  <!-- ===== Wave animation engine ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+  (function() {
+    const canvas = document.getElementById('wave-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x08051a, 30, 90);
+
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+    camera.position.set(0, 14, 26);
+    camera.lookAt(0, 0, -10);
+
+    const SIZE = 80;
+    const SEGMENTS = 140;
+    const geometry = new THREE.PlaneGeometry(SIZE, SIZE, SEGMENTS, SEGMENTS);
+    geometry.rotateX(-Math.PI / 2);
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uColorDeep:    { value: new THREE.Color(0x0a0420) },
+        uColorMid:     { value: new THREE.Color(0x4a1e7a) },
+        uColorCrest:   { value: new THREE.Color(0xe87cd8) },
+        uFog: { value: new THREE.Color(0x08051a) }
+      },
+      vertexShader: `
+        varying float vHeight;
+        varying vec3 vWorldPos;
+        void main() {
+          vHeight = position.y;
+          vec4 worldPos = modelMatrix * vec4(position, 1.0);
+          vWorldPos = worldPos.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPos;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColorDeep;
+        uniform vec3 uColorMid;
+        uniform vec3 uColorCrest;
+        uniform vec3 uFog;
+        uniform float uTime;
+        varying float vHeight;
+        varying vec3 vWorldPos;
+        void main() {
+          float h = clamp((vHeight + 2.0) / 4.0, 0.0, 1.0);
+          vec3 col = mix(uColorDeep, uColorMid, smoothstep(0.0, 0.55, h));
+          col = mix(col, uColorCrest, smoothstep(0.65, 1.0, h));
+          float shimmer = smoothstep(0.7, 1.0, h) * (0.5 + 0.5 * sin(vWorldPos.x * 0.6 + vWorldPos.z * 0.4 + uTime * 1.5));
+          col += shimmer * 0.35;
+          float sparkle = smoothstep(0.85, 1.0, h) * (0.5 + 0.5 * sin(vWorldPos.x * 2.1 - vWorldPos.z * 1.7 + uTime * 3.2));
+          col += sparkle * 0.2 * vec3(1.0, 0.7, 1.0);
+          float dist = length(vWorldPos - vec3(0.0, 14.0, 26.0));
+          float fogFactor = smoothstep(28.0, 75.0, dist);
+          col = mix(col, uFog, fogFactor);
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `,
+      side: THREE.DoubleSide
+    });
+
+    const waveMesh = new THREE.Mesh(geometry, material);
+    scene.add(waveMesh);
+
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0xc888e8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.32
+    });
+    const wireMesh = new THREE.Mesh(geometry, wireMat);
+    scene.add(wireMesh);
+
+    const waves = [
+      { amp: 1.6, k: 0.18, omega: 0.7,  theta: 0.3,  phase: 0.0 },
+      { amp: 1.1, k: 0.27, omega: 1.0,  theta: 1.1,  phase: 1.5 },
+      { amp: 0.7, k: 0.42, omega: 1.4,  theta: -0.5, phase: 2.7 },
+      { amp: 0.45,k: 0.65, omega: 1.9,  theta: 0.9,  phase: 0.8 },
+      { amp: 0.25,k: 0.95, omega: 2.6,  theta: -1.3, phase: 3.4 }
+    ];
+
+    const posAttr = geometry.attributes.position;
+    const vertexCount = posAttr.count;
+    const baseXZ = new Float32Array(vertexCount * 2);
+    for (let i = 0; i < vertexCount; i++) {
+      baseXZ[i * 2]     = posAttr.getX(i);
+      baseXZ[i * 2 + 1] = posAttr.getZ(i);
+    }
+
+    function updateWaves(t) {
+      for (let i = 0; i < vertexCount; i++) {
+        const x = baseXZ[i * 2];
+        const z = baseXZ[i * 2 + 1];
+        let y = 0;
+        for (let w = 0; w < waves.length; w++) {
+          const wv = waves[w];
+          y += wv.amp * Math.sin(
+            wv.k * (x * Math.cos(wv.theta) + z * Math.sin(wv.theta))
+            - wv.omega * t
+            + wv.phase
+          );
+        }
+        posAttr.setY(i, y);
+      }
+      posAttr.needsUpdate = true;
+      geometry.computeVertexNormals();
+    }
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let startTime = performance.now();
+    function animate() {
+      const t = (performance.now() - startTime) / 1000;
+      updateWaves(t);
+      material.uniforms.uTime.value = t;
+      camera.position.x = Math.sin(t * 0.05) * 1.2;
+      camera.lookAt(0, 0, -10);
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+  })();
   </script>
 </body>
 </html>

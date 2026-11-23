@@ -14,8 +14,10 @@ Plain HTML/CSS with no build step. The live site is hosted on Cloudflare; a mirr
 | `research.html` | Research |
 | `resources.html` | Resources |
 | `contact.html` | Contact |
+| `tsi.html` | TSI Study Hall |
+| `sine-wheel-lab.html` | Sine Wheel Lab (interactive) |
 
-Shared styling lives in `styles.css`; `favicon.*` / `apple-touch-icon.png` and `robots.txt` round out the site.
+Classroom materials (PDF) live in `materials/`. Shared styling lives in `styles.css`; `favicon.*` / `apple-touch-icon.png` and `robots.txt` round out the site.
 
 ## Local preview
 

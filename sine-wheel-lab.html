@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sine Wheel Lab</title>
+<style>
+/* Layout idea: black title bar with the live equation, one wide stage (wheel on the left drives the wave on the right), controls underneath. Built to be projected. */
+:root{
+  --bg:#f6f4ee; --panel:#ffffff; --ink:#141414; --muted:#5d5a52; --line:#d9d4c6;
+  --gold:#CBA24A; --gold-deep:#8a6a1c; --gold-soft:#f1e6c6;
+  --curve:#141414; --parent:#9a968b; --target:#b3261e; --grid:#e7e3d8; --bar:#141414; --bar-ink:#ffffff;
+  --display: Georgia, "Times New Roman", serif;
+  --body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121210; --panel:#1c1b18; --ink:#f3efe4; --muted:#b0aa9a; --line:#3a372f;
+    --gold:#d9b25c; --gold-deep:#e2c27a; --gold-soft:#3a3220;
+    --curve:#f3efe4; --parent:#7d796e; --target:#ff8a7a; --grid:#2a2823; --bar:#000000; --bar-ink:#ffffff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121210; --panel:#1c1b18; --ink:#f3efe4; --muted:#b0aa9a; --line:#3a372f;
+  --gold:#d9b25c; --gold-deep:#e2c27a; --gold-soft:#3a3220;
+  --curve:#f3efe4; --parent:#7d796e; --target:#ff8a7a; --grid:#2a2823; --bar:#000000; --bar-ink:#ffffff;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.4}
+header{background:var(--bar);color:var(--bar-ink);border-bottom:5px solid var(--gold);padding:12px 20px;display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;justify-content:space-between}
+header h1{font-size:18px;margin:0;letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+#eq{font-family:var(--display);font-size:clamp(22px,3.2vw,38px);font-style:italic;white-space:nowrap}
+#eq b{color:var(--gold);font-weight:400;font-style:normal}
+main{max-width:1240px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px;overflow-x:auto}
+canvas{display:block;width:100%;min-width:640px;height:auto}
+.live{font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px;padding:4px 8px 2px;display:flex;flex-wrap:wrap;gap:4px 24px}
+.live strong{color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.ctl{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.ctl .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ctl label{font-weight:700;font-size:17px}
+.ctl label i{font-family:var(--display);font-size:22px;color:var(--gold-deep)}
+.ctl output{font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.ctl small{color:var(--muted)}
+.ctl .sl{display:flex;gap:8px;align-items:center}
+input[type=range]{flex:1;accent-color:var(--gold-deep);height:28px;min-width:0}
+button,select{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--ink);border-radius:5px;padding:6px 12px;cursor:pointer}
+button:hover{background:var(--gold-soft)}
+button[aria-pressed="true"]{background:var(--gold);color:#141414;border-color:#141414}
+button.mini{padding:2px 9px;font-size:14px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fact{background:var(--gold-soft);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.fact span{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.fact strong{font-family:var(--display);font-size:24px;font-weight:400;font-variant-numeric:tabular-nums}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.bar label{display:flex;gap:6px;align-items:center}
+.bar .sp{flex:1}
+#match{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--target);border-radius:6px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+#match[hidden]{display:none}
+#verdict{font-weight:700}
+#verdict.ok{color:var(--gold-deep)}
+#answer{font-family:var(--display);font-style:italic;font-size:19px}
+.key{color:var(--muted);font-size:14px;max-width:75ch;margin:0}
+</style>
+</head>
+<body>
+<header>
+  <h1><a href="precalc.html" style="color:inherit;text-decoration:none">Goforth Math</a> &middot; Sine Wheel Lab</h1>
+  <div id="eq" aria-live="off"></div>
+</header>
+<main>
+  <div class="stage">
+    <canvas id="cv" width="1100" height="540" role="img" aria-label="A point travels around a wheel on the left. Its height draws the sine wave on the right."></canvas>
+    <div class="live" id="live"></div>
+  </div>
+
+  <div class="bar">
+    <button id="play" aria-pressed="false">▶ Spin the wheel</button>
+    <label for="th">θ <input type="range" id="th" min="0" max="14.6" step="0.01" value="1.047" style="width:220px"></label>
+    <label><input type="checkbox" id="showParent" checked> Show y = sin θ</label>
+    <label><input type="checkbox" id="showFeat" checked> Show midline, amplitude, period</label>
+    <label><input type="checkbox" id="showKeys"> Show five key points</label>
+    <span class="sp"></span>
+    <button id="matchBtn" aria-pressed="false">Match the wave</button>
+    <button id="reset">Reset to sin θ</button>
+  </div>
+
+  <div id="match" hidden>
+    <label for="targetSel">Target wave <select id="targetSel"></select></label>
+    <span id="hint"></span>
+    <span id="verdict"></span>
+    <button id="reveal" class="mini">Show one answer</button>
+    <span id="answer"></span>
+  </div>
+
+  <div class="row">
+    <div class="ctl">
+      <div class="top"><label for="sa"><i>a</i> &nbsp;wheel radius</label><output id="oa"></output></div>
+      <div class="sl"><input type="range" id="sa" min="-3" max="3" step="0.25" value="1"><button class="mini" data-sweep="a" aria-pressed="false">sweep</button></div>
+      <small>Stretches the outputs. Amplitude = |a|.</small>
+    </div>
+    <div class="ctl">
+      <div class="top"><label for="sd"><i>d</i> &nbsp;axle height</label><output id="od"></output></div>
+      <div class="sl"><input type="range" id="sd" min="-2" max="2" step="0.25" value="0"><button class="mini" data-sweep="d" aria-pressed="false">sweep</button></div>
+      <small>Slides the outputs up or down. Midline y = d.</small>
+    </div>
+    <div class="ctl">
+      <div class="top"><label for="sb"><i>b</i> &nbsp;wheel speed</label><output id="ob"></output></div>
+      <div class="sl"><input type="range" id="sb" min="0.25" max="4" step="0.25" value="1"><button class="mini" data-sweep="b" aria-pressed="false">sweep</button></div>
+      <small>Speeds up the inputs. Period = 2π / b.</small>
+    </div>
+    <div class="ctl">
+      <div class="top"><label for="sc"><i>c</i> &nbsp;head start</label><output id="oc"></output></div>
+      <div class="sl"><input type="range" id="sc" min="-12" max="12" step="1" value="0"><button class="mini" data-sweep="c" aria-pressed="false">sweep</button></div>
+      <small>Adds to the inputs. Phase shift = −c.</small>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="fact"><span>Amplitude</span><strong id="fAmp"></strong></div>
+    <div class="fact"><span>Period</span><strong id="fPer"></strong></div>
+    <div class="fact"><span>Midline</span><strong id="fMid"></strong></div>
+    <div class="fact"><span>Phase shift</span><strong id="fPh"></strong></div>
+    <div class="fact"><span>Maximum</span><strong id="fMax"></strong></div>
+    <div class="fact"><span>Minimum</span><strong id="fMin"></strong></div>
+  </div>
+
+  <p class="key">The point on the wheel has turned through the angle b(θ + c). Its height above the θ-axis is the output a·sin(b(θ + c)) + d. The dashed line carries that height across to the graph.</p>
+</main>
+
+<script>
+(function(){
+  var PI=Math.PI, U=46, X0=420, Y0=270, CX=150, GL=310, W=1100, H=540;
+  var S={a:1,b:1,c:0,d:0,th:PI/3,playing:false,sweep:null,dir:1,match:false,target:0};
+  var RANGE={a:[-3,3,0.25,1.2],b:[0.25,4,0.25,0.8],c:[-12,12,1,3.5],d:[-2,2,0.25,0.9]};
+  var TARGETS=[
+    {a:2,b:1,c:0,d:0,hint:"One slider."},
+    {a:1,b:1,c:0,d:1.5,hint:"One slider."},
+    {a:1,b:2,c:0,d:0,hint:"One slider."},
+    {a:1,b:1,c:-6,d:0,hint:"One slider."},
+    {a:-1.5,b:1,c:0,d:-1,hint:"Two sliders."},
+    {a:2,b:2,c:3,d:1,hint:"All four."},
+    {a:3,b:0.5,c:-12,d:-1,hint:"All four."},
+    {a:1,b:1,c:6,d:0,hint:"This is y = cos θ. Build it from sine."}
+  ];
+  var $=function(id){return document.getElementById(id)};
+  var cv=$("cv"), g=cv.getContext("2d");
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t}return a||1}
+  function num(v){var s=(Math.round(v*100)/100).toString();return s.replace("-","−")}
+  // n/d times pi as text
+  function piFrac(n,d){
+    if(n===0)return "0";
+    var k=gcd(n,d);n/=k;d/=k;if(d<0){n=-n;d=-d}
+    var s=n<0?"−":"";n=Math.abs(n);
+    return s+(n===1?"":n)+"π"+(d===1?"":"/"+d);
+  }
+  function f(P,t){return P.a*Math.sin(P.b*(t+P.c*PI/12))+P.d}
+  function eqText(P,html){
+    var w=function(s){return html?"<b>"+s+"</b>":s};
+    var a=P.a,b=P.b,c=Math.round(P.c),d=P.d,s="y = ";
+    if(a===0){return s+w(num(d))}
+    if(a===-1)s+=w("−");else if(a!==1)s+=w(num(a))+" ";
+    var inner="θ";
+    if(c!==0)inner="θ "+(c>0?"+ ":"− ")+w(piFrac(Math.abs(c),12));
+    if(b===1)s+=c===0?"sin θ":"sin("+inner+")";
+    else s+=c===0?"sin("+w(num(b))+"θ)":"sin( "+w(num(b))+"("+inner+") )";
+    if(d!==0)s+=(d>0?" + ":" − ")+w(num(Math.abs(d)));
+    return s;
+  }
+  function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+  function gx(t){return X0+t*U} function gy(y){return Y0-y*U}
+
+  function plot(P,color,width,dash){
+    g.save();g.beginPath();g.rect(GL,0,W-GL,H);g.clip();
+    g.beginPath();
+    for(var px=GL;px<=W;px+=1.5){var t=(px-X0)/U,y=gy(f(P,t));if(px===GL)g.moveTo(px,y);else g.lineTo(px,y)}
+    g.strokeStyle=color;g.lineWidth=width;g.setLineDash(dash||[]);g.lineJoin="round";g.stroke();g.restore();
+  }
+  function text(s,x,y,color,align,size){g.fillStyle=color;g.font=(size||15)+"px Helvetica, Arial, sans-serif";g.textAlign=align||"left";g.fillText(s,x,y)}
+
+  function draw(){
+    var ink=css("--ink"),muted=css("--muted"),grid=css("--grid"),gold=css("--gold"),goldD=css("--gold-deep"),panel=css("--panel");
+    g.clearRect(0,0,W,H);
+    // grid
+    g.lineWidth=1;g.strokeStyle=grid;g.setLineDash([]);
+    for(var y=-5;y<=5;y++){g.beginPath();g.moveTo(8,gy(y));g.lineTo(W,gy(y));g.stroke()}
+    for(var k=-1;k<=9;k++){var x=gx(k*PI/2);g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
+    // axes
+    g.strokeStyle=ink;g.lineWidth=1.5;
+    g.beginPath();g.moveTo(GL,Y0);g.lineTo(W,Y0);g.moveTo(X0,0);g.lineTo(X0,H);g.stroke();
+    g.beginPath();g.moveTo(8,Y0);g.lineTo(292,Y0);g.strokeStyle=muted;g.lineWidth=1;g.stroke();
+    for(k=-1;k<=9;k++){ if(k===0)continue; text(piFrac(k,2),gx(k*PI/2),Y0+18,muted,"center",14)}
+    for(y=-5;y<=5;y++){ if(y===0)continue; text(num(y),X0-8,gy(y)+5,muted,"right",14)}
+    text("θ",W-14,Y0-8,ink,"center",17);
+
+    if($("showParent").checked) plot({a:1,b:1,c:0,d:0},css("--parent"),2,[7,6]);
+    if(S.match) plot(TARGETS[S.target],css("--target"),5,[2,9]);
+
+    var per=2*PI/S.b, start=-S.c*PI/12, amp=Math.abs(S.a);
+    if($("showFeat").checked){
+      g.save();g.beginPath();g.rect(GL,0,W-GL,H);g.clip();
+      g.strokeStyle=goldD;g.lineWidth=2;g.setLineDash([10,6]);
+      g.beginPath();g.moveTo(GL,gy(S.d));g.lineTo(W,gy(S.d));g.stroke();g.setLineDash([]);
+      text("midline y = "+num(S.d),W-10,gy(S.d)-8,goldD,"right",15);
+      if(amp>0){
+        // amplitude arrow at the first crest/trough after the start
+        var xa=gx(start+per/4), y1=gy(S.d), y2=gy(S.d+S.a);
+        g.lineWidth=3;g.beginPath();g.moveTo(xa,y1);g.lineTo(xa,y2);g.stroke();
+        var s=y2<y1?1:-1;g.beginPath();g.moveTo(xa-6,y2+9*s);g.lineTo(xa,y2);g.lineTo(xa+6,y2+9*s);g.stroke();
+        text("|a| = "+num(amp),xa+10,(y1+y2)/2+5,goldD,"left",15);
+        // period bracket
+        var yb=H-22,xs=gx(start),xe=gx(start+per);
+        g.lineWidth=2.5;g.beginPath();g.moveTo(xs,yb-8);g.lineTo(xs,yb+8);g.moveTo(xs,yb);g.lineTo(xe,yb);g.moveTo(xe,yb-8);g.lineTo(xe,yb+8);g.stroke();
+        text("one period = "+periodText(),(xs+xe)/2,yb-8,goldD,"center",15);
+      }
+      g.restore();
+    }
+    plot(S,css("--curve"),4);
+    if($("showKeys").checked && amp>0){
+      g.save();g.beginPath();g.rect(GL,0,W-GL,H);g.clip();
+      var ys=[0,1,0,-1,0];
+      for(k=0;k<5;k++){var kx=gx(start+k*per/4),ky=gy(S.d+S.a*ys[k]);
+        g.beginPath();g.arc(kx,ky,7,0,2*PI);g.fillStyle=gold;g.fill();g.strokeStyle=ink;g.lineWidth=2;g.stroke();}
+      g.restore();
+    }
+    // wheel
+    var cy=gy(S.d), R=amp*U, ang=S.b*(S.th+S.c*PI/12);
+    var pxw=CX+S.a*U*Math.cos(ang), pyw=cy-S.a*U*Math.sin(ang);
+    g.setLineDash([]);g.strokeStyle=ink;g.lineWidth=2.5;
+    g.beginPath();g.arc(CX,cy,Math.max(R,0.5),0,2*PI);g.stroke();
+    g.strokeStyle=muted;g.lineWidth=1;g.beginPath();g.moveTo(CX,8);g.lineTo(CX,H-8);g.stroke();
+    g.strokeStyle=goldD;g.lineWidth=2;g.setLineDash([10,6]);g.beginPath();g.moveTo(8,cy);g.lineTo(292,cy);g.stroke();g.setLineDash([]);
+    g.strokeStyle=ink;g.lineWidth=3;g.beginPath();g.moveTo(CX,cy);g.lineTo(pxw,pyw);g.stroke();
+    g.beginPath();g.arc(CX,cy,4,0,2*PI);g.fillStyle=ink;g.fill();
+    // connector
+    var yv=f(S,S.th), gxp=gx(S.th), gyp=gy(yv);
+    g.strokeStyle=gold;g.lineWidth=2;g.setLineDash([5,5]);g.beginPath();g.moveTo(pxw,pyw);g.lineTo(gxp,gyp);g.stroke();
+    g.beginPath();g.moveTo(gxp,Y0);g.lineTo(gxp,gyp);g.stroke();g.setLineDash([]);
+    [[pxw,pyw],[gxp,gyp]].forEach(function(p){g.beginPath();g.arc(p[0],p[1],9,0,2*PI);g.fillStyle=gold;g.fill();g.strokeStyle=ink;g.lineWidth=2.5;g.stroke()});
+    text("the wheel",CX,H-10,muted,"center",14);
+
+    $("live").innerHTML="<span>θ = <strong>"+S.th.toFixed(3)+"</strong></span><span>wheel angle b(θ + c) = <strong>"+ang.toFixed(3).replace("-","−")+"</strong></span><span>height y = <strong>"+yv.toFixed(3).replace("-","−")+"</strong></span>";
+  }
+  function periodText(){var n=Math.round(S.b*4);return Math.abs(S.b*4-n)<1e-9?piFrac(8,n):(2/S.b).toFixed(2)+"π"}
+  function sync(){
+    $("sa").value=S.a;$("sb").value=S.b;$("sc").value=S.c;$("sd").value=S.d;$("th").value=S.th;
+    $("oa").textContent=num(S.a);$("ob").textContent=num(S.b);$("od").textContent=num(S.d);
+    var cr=Math.round(S.c);$("oc").textContent=Math.abs(S.c-cr)<1e-9?piFrac(cr,12):(S.c/12).toFixed(2).replace("-","−")+"π";
+    $("eq").innerHTML=eqText(S,true);
+    $("fAmp").textContent=num(Math.abs(S.a));$("fPer").textContent=periodText();$("fMid").textContent="y = "+num(S.d);
+    $("fPh").textContent=cr===0?"none":piFrac(Math.abs(cr),12)+(cr>0?" left":" right");
+    $("fMax").textContent=num(S.d+Math.abs(S.a));$("fMin").textContent=num(S.d-Math.abs(S.a));
+    if(S.match){
+      var T=TARGETS[S.target],ok=true;
+      for(var i=0;i<60;i++){var t=-2+i*0.29;if(Math.abs(f(S,t)-f(T,t))>1e-6){ok=false;break}}
+      $("verdict").textContent=ok?"Matched ✓  Is there another equation that also works?":"Not matched yet";
+      $("verdict").className=ok?"ok":"";
+    }
+    draw();
+  }
+  ["a","b","c","d"].forEach(function(p){
+    $("s"+p).addEventListener("input",function(e){stopSweep();S[p]=parseFloat(e.target.value);sync()});
+  });
+  $("th").addEventListener("input",function(e){S.th=parseFloat(e.target.value);sync()});
+  ["showParent","showFeat","showKeys"].forEach(function(id){$(id).addEventListener("change",draw)});
+  function stopSweep(){
+    if(!S.sweep)return;var p=S.sweep,st=RANGE[p][2];S[p]=Math.round(S[p]/st)*st;S.sweep=null;
+    document.querySelectorAll("[data-sweep]").forEach(function(b){b.setAttribute("aria-pressed","false")});
+  }
+  document.querySelectorAll("[data-sweep]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var p=btn.getAttribute("data-sweep"),was=S.sweep===p;stopSweep();
+      if(!was){S.sweep=p;S.dir=1;btn.setAttribute("aria-pressed","true")}
+      sync();
+    });
+  });
+  $("play").addEventListener("click",function(){S.playing=!S.playing;this.setAttribute("aria-pressed",S.playing);this.textContent=S.playing?"❚❚ Pause":"▶ Spin the wheel"});
+  $("reset").addEventListener("click",function(){stopSweep();S.a=1;S.b=1;S.c=0;S.d=0;sync()});
+  var sel=$("targetSel");
+  TARGETS.forEach(function(t,i){var o=document.createElement("option");o.value=i;o.textContent="Wave "+(i+1);sel.appendChild(o)});
+  function setTarget(i){S.target=i;$("hint").textContent=TARGETS[i].hint;$("answer").textContent="";sync()}
+  sel.addEventListener("change",function(){setTarget(parseInt(sel.value,10))});
+  $("matchBtn").addEventListener("click",function(){S.match=!S.match;this.setAttribute("aria-pressed",S.match);$("match").hidden=!S.match;setTarget(S.target)});
+  $("reveal").addEventListener("click",function(){$("answer").textContent=eqText(TARGETS[S.target],false)});
+
+  var last=null;
+  function tick(ts){
+    if(last===null)last=ts;var dt=Math.min(0.05,(ts-last)/1000);last=ts;var ch=false;
+    if(S.playing){S.th+=dt*1.1;if(S.th>14.6)S.th=0;ch=true}
+    if(S.sweep){var r=RANGE[S.sweep];S[S.sweep]+=S.dir*r[3]*dt;
+      if(S[S.sweep]>=r[1]){S[S.sweep]=r[1];S.dir=-1}if(S[S.sweep]<=r[0]){S[S.sweep]=r[0];S.dir=1}ch=true}
+    if(ch)sync();
+    requestAnimationFrame(tick);
+  }
+  if(window.matchMedia)["(prefers-color-scheme: dark)"].forEach(function(q){var m=window.matchMedia(q);if(m.addEventListener)m.addEventListener("change",draw)});
+  new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+  sync();requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
